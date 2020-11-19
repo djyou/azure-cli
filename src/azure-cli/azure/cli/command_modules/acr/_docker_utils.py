@@ -178,7 +178,6 @@ def _get_aad_token_after_challenge(cli_ctx,
     authhost = urlunparse((authurl[0], authurl[1], '/oauth2/token', '', '', ''))
 
     scope = _get_scope(package_type, repository, permission)
-    print(scope)
 
     content = {
         'grant_type': 'refresh_token',
