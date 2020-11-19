@@ -16,6 +16,7 @@ from ._docker_utils import (
     request_data_from_registry,
     get_access_credentials,
     RegistryException,
+    PackageType,
     RepoAccessTokenPermission
 )
 

@@ -160,6 +160,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
         client_factory=cf_acr_private_endpoint_connections
     )
 
+    acr_package_pypi_util = CliCommandType(
+        operations_tmpl='azure.cli.command_modules.acr.package_pypi#{}'
+    )
+
     with self.command_group('acr', acr_custom_util) as g:
         g.command('check-name', 'acr_check_name', table_transformer=None)
         g.command('list', 'acr_list')
@@ -291,6 +295,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
         g.command('push', 'acr_helm_push')
         g.command('repo add', 'acr_helm_repo_add')
         g.command('install-cli', 'acr_helm_install_cli', is_preview=True)
+
+    with self.command_group('acr pypi', acr_package_pypi_util, is_preview=True) as g:
+        g.command('get-credential', 'acr_package_pypi_get_credential')
+        g.command('list', 'acr_package_pypi_list')
 
     with self.command_group('acr network-rule', acr_network_rule_util) as g:
         g.command('list', 'acr_network_rule_list')
