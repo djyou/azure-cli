@@ -17,7 +17,6 @@ from ._utils import user_confirmation
 from ._docker_utils import (
     get_access_credentials,
     request_data_from_registry,
-    RegistryException,
     PackageType,
     PackageAccessTokenPermission
 )
@@ -26,13 +25,13 @@ from ._docker_utils import (
 logger = get_logger(__name__)
 
 
-def acr_package_pypi_get_credential(cmd,
-                                    registry_name,
-                                    package_name=None,
-                                    tenant_suffix=None,
-                                    pull=False,
-                                    push=False,
-                                    delete=False):
+def acr_pypi_get_credential(cmd,
+                            registry_name,
+                            package_name=None,
+                            tenant_suffix=None,
+                            pull=False,
+                            push=False,
+                            delete=False):
     if package_name and not (pull or push or delete):
         raise CLIError('Usage error: --package-name must be used with one or more --pull --push --delete')
     if not package_name and (pull or push or delete):
@@ -48,7 +47,7 @@ def acr_package_pypi_get_credential(cmd,
     if delete:
         permission = '{},{}'.format(permission, PackageAccessTokenPermission.DELETE.value)
 
-    loginServer, username, password = get_access_credentials(
+    login_server, username, password = get_access_credentials(
         cmd=cmd,
         registry_name=registry_name,
         tenant_suffix=tenant_suffix,
@@ -57,7 +56,7 @@ def acr_package_pypi_get_credential(cmd,
         permission=permission)
 
     token_info = {
-        "endpoint": 'https://{}/pkg/v1/pypi'.format(loginServer),
+        "endpoint": 'https://{}/pkg/v1/pypi'.format(login_server),
         "username": username,
         "password": password
     }
@@ -65,12 +64,12 @@ def acr_package_pypi_get_credential(cmd,
     return token_info
 
 
-def acr_package_pypi_list(cmd,
-                          registry_name,
-                          package_name=None,
-                          tenant_suffix=None,
-                          username=None,
-                          password=None):
+def acr_pypi_list(cmd,
+                  registry_name,
+                  package_name=None,
+                  tenant_suffix=None,
+                  username=None,
+                  password=None):
     login_server, username, password = get_access_credentials(
         cmd=cmd,
         registry_name=registry_name,
@@ -84,12 +83,46 @@ def acr_package_pypi_list(cmd,
     html = request_data_from_registry(
         http_method='get',
         login_server=login_server,
-        path=_get_package_pypi_path(package_name),
+        path=_get_pypi_path(package_name),
         username=username,
         password=password)[0]
 
     print(html)
 
 
-def _get_package_pypi_path(package_name):
-    return '/pkg/v1/pypi/{}'.format(package_name) if package_name else '/pkg/v1/pypi'
+def acr_pypi_delete(cmd,
+                    registry_name,
+                    package_name,
+                    version,
+                    tenant_suffix=None,
+                    username=None,
+                    password=None,
+                    yes=False):
+    message = "This operation will delete the package '{}' version '{}'".format(package_name, version)
+    user_confirmation("{}.\nAre you sure you want to continue?".format(message), yes)
+
+    login_server, username, password = get_access_credentials(
+        cmd=cmd,
+        registry_name=registry_name,
+        tenant_suffix=tenant_suffix,
+        username=username,
+        password=password,
+        package_type=PackageType.PYPI,
+        repository=package_name,
+        permission=PackageAccessTokenPermission.DELETE.value)
+
+    return request_data_from_registry(
+        http_method='delete',
+        login_server=login_server,
+        path=_get_pypi_path(package_name, version),
+        username=username,
+        password=password)[0]
+
+
+def _get_pypi_path(package_name, version=None):
+    if not package_name:
+        return '/pkg/v1/pypi'
+    if not version:
+        return '/pkg/v1/pypi/{}'.format(package_name)
+
+    return '/pkg/v1/pypi/{}/{}'.format(package_name, version)
