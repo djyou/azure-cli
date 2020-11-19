@@ -89,12 +89,6 @@ def _handle_challenge_phase(login_server,
             raise ValueError(
                 "Permission is required for an artifact repository. Allowed access token permission: {}"
                 .format(helm_permissions))
-    elif package_type is PackageType.PYPI:
-        pypi_package_permissions = {permission.value for permission in PackageAccessTokenPermission}
-        if permission not in pypi_package_permissions:
-            raise ValueError(
-                "Permission is required for PyPI package. Allowed access token permission: {}"
-                .format(pypi_package_permissions))
 
     login_server = login_server.rstrip('/')
 
@@ -184,6 +178,7 @@ def _get_aad_token_after_challenge(cli_ctx,
     authhost = urlunparse((authurl[0], authurl[1], '/oauth2/token', '', '', ''))
 
     scope = _get_scope(package_type, repository, permission)
+    print(scope)
 
     content = {
         'grant_type': 'refresh_token',

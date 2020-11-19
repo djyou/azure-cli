@@ -39,14 +39,14 @@ def acr_package_pypi_get_credential(cmd,
         raise CLIError('Usage error: --pull --push --delete must be used with --package-name')
 
     # always add metadata read
-    permission = PackageAccessTokenPermission.METADATA_READ
+    permission = PackageAccessTokenPermission.METADATA_READ.value
 
     if pull:
-        permission = '{},{}'.format(permission, PackageAccessTokenPermission.PULL)
+        permission = '{},{}'.format(permission, PackageAccessTokenPermission.PULL.value)
     if push:
-        permission = '{},{}'.format(permission, PackageAccessTokenPermission.PUSH)
+        permission = '{},{}'.format(permission, PackageAccessTokenPermission.PUSH.value)
     if delete:
-        permission = '{},{}'.format(permission, PackageAccessTokenPermission.DELETE)
+        permission = '{},{}'.format(permission, PackageAccessTokenPermission.DELETE.value)
 
     loginServer, username, password = get_access_credentials(
         cmd=cmd,
