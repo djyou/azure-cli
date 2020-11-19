@@ -56,7 +56,7 @@ def acr_pypi_get_credential(cmd,
         permission=permission)
 
     token_info = {
-        "endpoint": 'https://{}/pkg/v1/pypi'.format(login_server),
+        "endpoint": '{}/pkg/v1/pypi'.format(login_server), # TODO: get the endpoint from RP
         "username": username,
         "password": password
     }
