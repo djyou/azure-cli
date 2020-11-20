@@ -299,6 +299,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
     with self.command_group('acr pypi', acr_package_pypi_util, is_preview=True) as g:
         g.command('get-credential', 'acr_pypi_get_credential')
         g.command('list', 'acr_pypi_list')
+        g.command('upload', 'acr_pypi_upload')
         g.command('delete', 'acr_pypi_delete')
 
     with self.command_group('acr network-rule', acr_network_rule_util) as g:

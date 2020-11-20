@@ -90,6 +90,33 @@ def acr_pypi_list(cmd,
     print(html)
 
 
+def acr_pypi_upload(cmd,
+                    registry_name,
+                    package_name,
+                    file_path,
+                    tenant_suffix=None,
+                    username=None,
+                    password=None):
+    login_server, username, password = get_access_credentials(
+        cmd=cmd,
+        registry_name=registry_name,
+        tenant_suffix=tenant_suffix,
+        username=username,
+        password=password,
+        package_type=PackageType.PYPI,
+        repository=package_name,
+        permission=PackageAccessTokenPermission.PUSH.value)
+
+    from subprocess import Popen
+    p = Popen(['python',
+               '-m', 'twine', 'upload',
+               '--username', username,
+               '--password', password,
+               '--repository-url', 'https://{}/pkg/v1/pypi'.format(login_server), # TODO: get the endpoint from RP
+               file_path])
+    p.wait()
+
+
 def acr_pypi_delete(cmd,
                     registry_name,
                     package_name,

@@ -66,7 +66,7 @@ class HelmAccessTokenPermission(Enum):
 
 class PackageAccessTokenPermission(Enum):
     METADATA_READ = 'metadata_read'
-    PULL = 'pull'
+    PULL = 'metadata_read,pull' # pull always reads metadata before downloading
     PUSH = 'push'
     DELETE = 'delete'
 
