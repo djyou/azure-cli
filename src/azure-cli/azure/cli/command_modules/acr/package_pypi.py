@@ -108,8 +108,7 @@ def acr_pypi_upload(cmd,
         permission=PackageAccessTokenPermission.PUSH.value)
 
     from subprocess import Popen
-    p = Popen(['python',
-               '-m', 'twine', 'upload',
+    p = Popen(['python', '-m', 'twine', 'upload',
                '--username', username,
                '--password', password,
                '--repository-url', 'https://{}/pkg/v1/pypi'.format(login_server), # TODO: get the endpoint from RP
