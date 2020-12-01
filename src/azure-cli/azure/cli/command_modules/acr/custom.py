@@ -204,14 +204,16 @@ def acr_login(cmd,
             if not package_name or not permissions:
                 raise CLIError("`--package-name` and `--permissions` are required with `--package-type`.")
 
-            from ._docker_utils import get_access_credentials
+            from ._docker_utils import get_access_credentials, PackageAccessTokenPermission
             login_server, username, password = get_access_credentials(
                 cmd=cmd,
                 registry_name=registry_name,
                 tenant_suffix=tenant_suffix,
                 package_type=package_type,
                 repository=package_name,
-                permission=','.join(permissions))
+                # always add metadata read
+                permission='{},{}'.format(','.join(permissions), PackageAccessTokenPermission.METADATA_READ.value))
+
             return {
                 "endpoint": '{}/pkg/v1/pypi'.format(login_server), # TODO: get the endpoint from RP
                 "username": username,
