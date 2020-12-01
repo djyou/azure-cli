@@ -117,16 +117,7 @@ def validate_expiration_time(namespace):
 def validate_package_type(namespace):
     if namespace.package_type:
         from ._docker_utils import PackageType
-        if namespace.package_type == 'pypi':
-            namespace.package_type = PackageType.PYPI
-        else:
-            raise CLIError("Invalid package type '{}'".format(namespace.package_type))
-
-
-def validate_permissions(namespace):
-    if namespace.package_type:
-        from ._docker_utils import PackageType
-        if namespace.package_type == 'pypi':
+        if namespace.package_type == PackageType.PYPI.value:
             namespace.package_type = PackageType.PYPI
         else:
             raise CLIError("Invalid package type '{}'".format(namespace.package_type))

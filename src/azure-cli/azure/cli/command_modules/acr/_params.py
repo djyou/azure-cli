@@ -78,7 +78,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-statements
         c.argument('cmd_value', help="Commands to execute.", options_list=['--cmd'])
         c.argument('package_type', help='The package type.', arg_type=get_enum_type(['pypi']), validator=validate_package_type)
         c.argument('package_name', help='The package name.')
-        c.argument('permissions', nargs='+', help='Space-separated list of actions that trigger the webhook to post notifications.', arg_type=get_enum_type(['pull', 'push', 'delete']))
+        c.argument('permissions', nargs='+', help='Space-separated list of permissions.', arg_type=get_enum_type(['pull', 'push', 'delete']))
 
     for scope in ['acr create', 'acr update']:
         with self.argument_context(scope, arg_group='Network Rule') as c:
